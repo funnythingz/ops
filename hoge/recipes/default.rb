@@ -1,12 +1,11 @@
-service "iptables" do
-  action [:stop, :disable]
-end
-
-%w{git vim}.each do |pkg|
-  package pkg do
-    action :install
-  end
-end
+#
+# Cookbook Name:: hoge
+# Recipe:: default
+#
+# Copyright (C) 2015 YOUR_NAME
+#
+# All rights reserved - Do Not Redistribute
+#
 
 template ".vimrc" do
   owner  "vagrant"
@@ -14,15 +13,6 @@ template ".vimrc" do
   mode   "0644"
   path   "/home/vagrant/.vimrc"
   source ".vimrc.erb"
-end
-
-package "nginx" do
-  action :install
-end
-
-service "nginx" do
-  supports :status => true, :restart => true, :reload => true
-  action [ :enable , :start ]
 end
 
 git "/home/vagrant/.rbenv" do
@@ -47,15 +37,21 @@ git "/home/vagrant/.rbenv/plugins/ruby-build" do
   action     :sync
 end
 
+%w{.bash_profile .bashrc}.each do |filename|
+  template filename do
+    owner  "vagrant"
+    group  "vagrant"
+    mode   "0644"
+    path   "/home/vagrant/#{filename}"
+    source "#{filename}.erb"
+  end
+end
+
 template "rbenv.sh" do
   owner  "vagrant"
   group  "vagrant"
   path   "/home/vagrant/rbenv.sh"
   source "rbenv.sh.erb"
-end
-
-package "openssl-devel" do
-  action :install
 end
 
 bash "rbenv install 2.1.5" do
@@ -77,28 +73,5 @@ bash "rbenv global 2.1.5" do
   user   "vagrant"
   cwd    "/home/vagrant"
   code   "source rbenv.sh; rbenv global 2.1.5"
-  action :run
-end
-
-bash "bundler" do
-  user   "vagrant"
-  cwd    "/home/vagrant"
-  code   "source rbenv.sh; gem install bundler"
-  action :run
-  not_if { ::File.exists? "/home/vagrant/.rbenv/shims/bundle" }
-end
-
-bash "unicorn" do
-  user   "vagrant"
-  cwd    "/home/vagrant"
-  code   "source rbenv.sh; gem install unicorn"
-  action :run
-  not_if { ::File.exists? "/home/vagrant/.rbenv/shims/unicorn" }
-end
-
-bash "rbenv rehash" do
-  user   "vagrant"
-  cwd    "/home/vagrant"
-  code   "source rbenv.sh; rbenv rehash"
   action :run
 end

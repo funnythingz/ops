@@ -15,7 +15,31 @@ Vagrant.configure(2) do |config|
   config.vm.box = "chef/centos-6.5"
 
   config.vm.provision :chef_solo do |chef|
-    chef.cookbooks_path = './chef-repo/site-cookbooks'
+    chef.cookbooks_path = './cookbooks'
+
+    chef.add_recipe 'yum'
+    chef.add_recipe 'yum-pkg'
+    chef.add_recipe 'build-essential'
+    chef.add_recipe 'ruby_build'
+    chef.add_recipe 'rbenv'
+    chef.add_recipe 'git'
+    chef.add_recipe 'vim'
+    chef.add_recipe 'nginx'
+    chef.add_recipe 'unicorn'
+    chef.add_recipe 'nodejs'
+    chef.add_recipe 'hoge'
+
+    chef.json = {
+      "rbenv" => {
+        "global" => "2.1.5",
+        "rubies" => ["2.1.5"],
+        "gems" => {
+          "2.1.5" => [
+            {'name' => 'bundler'}
+          ]
+        }
+      }
+    }
   end
 
   # Disable automatic box update checking. If you disable this, then
