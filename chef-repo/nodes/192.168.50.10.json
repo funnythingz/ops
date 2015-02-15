@@ -1,0 +1,18 @@
+{
+  "run_list": [
+    "recipe[development]"
+  ],
+
+  "automatic": {
+    "ipaddress": "192.168.50.10"
+  },
+
+  "user": {
+    "name": "unko",
+    "password": "$1$HV9qpDDy$g//FD8YYzgqq5eAWkoPlL/"
+  },
+  "ssh": {
+    "port": 2222
+  }
+
+}
